@@ -1,5 +1,5 @@
 """
-- OverviewPyspark on Win10: https://sparkbyexamples.com/pyspark-tutorial/#pyspark-installation
+- Overview Pyspark on Win10: https://sparkbyexamples.com/pyspark-tutorial/#pyspark-installation
     - Python3.7 nötig, sonst kommt ein Fehler Integer required but byte
     - im Pfad von Python3.7 muss Python und Python\Scripts stehen
     - SPARK_HOME, JAVA_HOME, HADOOP_HOME sind als Umgebungsvariable gesetzt
@@ -23,12 +23,12 @@
         ############ see https://gist.github.com/eddies/f37d696567f15b33029277ee9084c4a0
         ############ see https://medium.com/@purmac/using-standalone-spark-with-amazon-s3-1ff72f2cf843
 """
-
+from pathlib import Path
 from pyspark.sql import SparkSession
 
 """
 import configparser
-import os
+
 
 
 config = configparser.ConfigParser()
@@ -52,5 +52,4 @@ spark2 = SparkSession.builder\
 
 df = spark1.read.csv("s3a://udacity-dend/pagila/payment/payment.csv")
 df.write.parquet("s3a://aws-emr-resources-726459035533-us-east-1/data/payment2.parquet")
-
 df2 = spark2.read.parquet("s3a://aws-emr-resources-726459035533-us-east-1/data/payment2.parquet")
