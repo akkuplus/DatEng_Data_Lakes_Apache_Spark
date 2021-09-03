@@ -14,7 +14,8 @@ spark1 = SparkSession.builder\
                     .master('local[*]')\
                     .getOrCreate()
 
-# Preparation Reading JSON from S3a
+# 1) Settings log data
+# #Reading JSON from S3a
 #df_logs = spark1.read.json("s3a://udacity-dend/log_data")
 #df_songs = spark1.read.json("s3a://udacity-dend/song_data")
 
@@ -42,16 +43,16 @@ LOG_SCHEMA = StructType([
     StructField("userAgent", StringType()),
 ])
 
-# Load json applying song schema
+# Load json applying schema
 df_log = spark1.read.schema(LOG_SCHEMA).json(log_path)
 df_log.show(10, truncate=False)
 
-# Preparation song data
+
+
+# 2 Load song data
 song_path = Path().cwd().joinpath("data").joinpath("song-data").joinpath("*").joinpath("*").joinpath("*").joinpath("*.json").as_uri()
 song_path = os.path.join(os.getcwd(), "data", "song-data", "*", "*", "*", "*.json")
-# df = spark1.read.json(log_path)
 
-# Create schema for jsons of songs
 SONG_SCHEMA = StructType([
     StructField("artist_id", StringType()),
     StructField("artist_latitude", DoubleType()),
@@ -65,7 +66,12 @@ SONG_SCHEMA = StructType([
     StructField("year", IntegerType()),
 ])
 
-# Load json applying log schema
-df_log = spark1.read.schema(SONG_SCHEMA).json(song_path, multiLine="false")
-#
-df_log.show(10, truncate=False)
+# Load json applying schema
+df_song = spark1.read.schema(SONG_SCHEMA).json(song_path, multiLine="false")
+df_song.show(10, truncate=False)
+
+# Derivering tables
+songs_table = df_song.select(["song_id", "title", "artist_id", "year", "duration"])
+songs_table.show(10, truncate=False)
+
+
