@@ -22,11 +22,6 @@ os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS']['AWS_SECRET_ACCESS_KEY']
 logger = Log.getLogger(__name__)
 logger.setLevel(Log.ERROR)
 
-# Simple Access Test:
-# Test: df = spark.read.csv("s3a://udacity-dend/pagila/payment/payment.csv")
-# Test: df.write.csv("s3a://aws-emr-resources-726459035533-us-east-1/data/payment5.csv", sep=";")
-
-
 
 def create_spark_session():
     spark = SparkSession \
@@ -34,9 +29,8 @@ def create_spark_session():
         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
         .getOrCreate()
     logger.debug("Created Data Schemas")
+
     return spark
-
-
 
 
 # Create schema for jsons of logs
@@ -94,8 +88,8 @@ def process_song_data(spark, input_data, output_data):
     songs_table.write.mode('overwrite').partitionBy("year","artist_id").parquet(output_location)
 
     # artists-table: extract columns to create artists-table
-    artists_table = df_songs.select(["artist_id","artist_name","artist_location","artist_latitude", "artist_longitude"])
-    
+    artists_table = df_songs.select(["artist_id", "artist_name", "artist_location", "artist_latitude", "artist_longitude"])
+
     # artists-table: persist artists-table to parquet
     output_location = os.path.join(output_data, "artists_table.parquet")
     artists_table.write.mode('overwrite').parquet(output_location)
@@ -115,7 +109,7 @@ def process_log_data(spark, input_data, output_data):
 
     # transform timestamp
     df_logs = df_logs.withColumn("start_time", F.from_unixtime(F.col("ts") / 1000))
-    #df_logs.show(10, truncate=False)
+    df_logs.show(10, truncate=False)
 
     # persist log-data
     output_location = os.path.join(output_data, "log-data.parquet")
@@ -190,7 +184,7 @@ def main():
     # input_data = "s3a://udacity-dend/"
 
     output_data = os.path.join(os.getcwd(), "data")
-    # output_data = "s3a://aws-emr-resources-726459035533-us-east-1/data/"
+    # output_data = "s3a://<url>/data/"
 
     process_song_data(spark, input_data, output_data)
     process_log_data(spark, input_data, output_data)
